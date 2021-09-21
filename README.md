@@ -1,0 +1,6 @@
+- add custom colors to diff wavelengths
+- highlight path difference (2 beams from slits shining on mouse on screen?)
+- highlight how these 2 waves interfere to give screen pattern (draw lines to show peak + peak?)
+- show sine wave on these 2 beams / paths
+- blogpost-esque description below
+- diffraction grating
