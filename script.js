@@ -102,10 +102,11 @@ function mouseDragged() {
 		x, 0.5 * (distanceBetweenSlits + slitWidth)) <= inputRadius
 		|| dist(mX, mY,
 			x, -0.5 * (distanceBetweenSlits + slitWidth)) <= inputRadius) {
-		console.log(mX, mY)
 		dSlider.value( 2*(dist(x, mY, x, 0)) )
 	}
 
-	if ()
+	if (dist(mX, mY, x, 0) <= inputRadius) {
+		lSlider.value( 2*(dist(mX, 0, 0, 0)) )
+	}
 	return false;
 }
