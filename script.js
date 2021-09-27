@@ -33,7 +33,7 @@ function setup() {
 
 	dSlider = createSlider(1, height / 2, 100)
 	lSlider = createSlider(1, width / 2, width / 4)
-	wSlider = createSlider(1, 300, 20)
+	wSlider = createSlider(1, 50, 20)
 }
 // 60, 330, 26
 function draw() {
@@ -47,7 +47,12 @@ function draw() {
 
 	drawSlits(-0.5 * distanceToScreen)
 	drawScreen(0.5 * distanceToScreen)
+
+	stroke(255)
 	drawWaves(-0.5 * distanceToScreen)
+	drawLines(-0.5 * distanceToScreen)
+
+	drawSineWaves();
 }
 
 function drawSlits(x) {
@@ -91,22 +96,79 @@ function drawWaves(x) {
 
 }
 
+function drawLines(x) {
+	let mX = mouseX - width / 2;
+	let mY = height / 2 - mouseY;
+
+	line(x, 0.5 * (distanceBetweenSlits + slitWidth), 0.5 * distanceToScreen, mY)
+	line(x, -0.5 * (distanceBetweenSlits + slitWidth), 0.5 * distanceToScreen, mY)
+}
+
+let pathLength;
+let resolution = 500;
+let amplitude = 10;
+let dx;
+let pX, pY, _pX, _pY = [0, 0, 0, 0];
+let theta;
+function drawSineWaves() {
+	let mX = mouseX - width / 2;
+	let mY = height / 2 - mouseY;
+
+	// 1st line
+	pathLength = sqrt(
+		pow(distanceToScreen, 2) +
+		pow(mY - 0.5*(distanceBetweenSlits + slitWidth), 2)
+	)
+	dx = pathLength / resolution;
+	theta = atan((mY-0.5*(distanceBetweenSlits + slitWidth)) / distanceToScreen)
+	for (let x = 0; x < pathLength; x += dx) {
+		_pX = x;
+		_pY = (sin((2*PI/wavelength)*x)*amplitude);
+
+		// rotation matrix
+		pX = (_pX*cos(theta)) - (_pY*sin(theta)) - 0.5*distanceToScreen
+		pY = (_pX*sin(theta)) + (_pY*cos(theta)) + 0.5*(distanceBetweenSlits + slitWidth)
+
+		point(pX, pY)
+	}
+
+	// 2nd line
+	pathLength = sqrt(
+		pow(distanceToScreen, 2) +
+		pow(mY + 0.5*(distanceBetweenSlits + slitWidth), 2)
+	)
+	dx = pathLength / resolution;
+	theta = atan((mY+0.5*(distanceBetweenSlits + slitWidth)) / distanceToScreen)
+	for (let x = 0; x < pathLength; x += dx) {
+		_pX = x;
+		_pY = (sin((2*PI/wavelength)*x)*amplitude);
+
+		// rotation matrix
+		pX = (_pX*cos(theta)) - (_pY*sin(theta)) - 0.5*distanceToScreen
+		pY = (_pX*sin(theta)) + (_pY*cos(theta)) - 0.5*(distanceBetweenSlits + slitWidth)
+
+		point(pX, pY)
+	}
+}
+
 function mouseDragged() {
+	if (mouseX > width || mouseX < 0 || mouseY < 0 || mouseY > height) return;
+
 	let x = -0.5 * distanceToScreen;
 
 	// changed origin to be center of screen
-	let mX = mouseX - width/2;
-	let mY = height/2 - mouseY;
-	
+	let mX = mouseX - width / 2;
+	let mY = height / 2 - mouseY;
+
 	if (dist(mX, mY,
 		x, 0.5 * (distanceBetweenSlits + slitWidth)) <= inputRadius
 		|| dist(mX, mY,
 			x, -0.5 * (distanceBetweenSlits + slitWidth)) <= inputRadius) {
-		dSlider.value( 2*(dist(x, mY, x, 0)) )
+		dSlider.value(2 * (dist(x, mY, x, 0)))
 	}
 
 	if (dist(mX, mY, x, 0) <= inputRadius) {
-		lSlider.value( 2*(dist(mX, 0, 0, 0)) )
+		lSlider.value(2 * (dist(mX, 0, 0, 0)))
 	}
 	return false;
 }
