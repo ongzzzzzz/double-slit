@@ -13,14 +13,24 @@ let dSlider; // slit separation
 let lSlider; // dist to screen
 let wSlider; // wavelength 
 
+// drawScreen
 let n;
 let k = 0.5;
 let modulo;
 let pointColor;
 
+// drawWaves
 let wavesToDraw = 20;
 
 let inputRadius = 20;
+
+// drawSineWaves
+let pathLength;
+let resolution = 500;
+let amplitude = 10;
+let dx;
+let pX, pY, _pX, _pY = [0, 0, 0, 0];
+let theta;
 
 function setup() {
 	createCanvas(windowWidth, windowHeight);
@@ -86,12 +96,12 @@ function drawWaves(x) {
 
 	for (let i = 1; i <= wavesToDraw; i++) {
 		arc(x, 0.5 * (distanceBetweenSlits + slitWidth),
-			i * wavelength, i * wavelength, -PI / 2, PI / 2)
+			i * 2*wavelength, i * 2*wavelength, -PI / 2, PI / 2)
 	}
 
 	for (let i = 1; i <= wavesToDraw; i++) {
 		arc(x, -0.5 * (distanceBetweenSlits + slitWidth),
-			i * wavelength, i * wavelength, -PI / 2, PI / 2)
+			i * 2*wavelength, i * 2*wavelength, -PI / 2, PI / 2)
 	}
 
 }
@@ -104,12 +114,7 @@ function drawLines(x) {
 	line(x, -0.5 * (distanceBetweenSlits + slitWidth), 0.5 * distanceToScreen, mY)
 }
 
-let pathLength;
-let resolution = 500;
-let amplitude = 10;
-let dx;
-let pX, pY, _pX, _pY = [0, 0, 0, 0];
-let theta;
+
 function drawSineWaves() {
 	let mX = mouseX - width / 2;
 	let mY = height / 2 - mouseY;
@@ -123,7 +128,7 @@ function drawSineWaves() {
 	theta = atan((mY-0.5*(distanceBetweenSlits + slitWidth)) / distanceToScreen)
 	for (let x = 0; x < pathLength; x += dx) {
 		_pX = x;
-		_pY = (sin((2*PI/wavelength)*x)*amplitude);
+		_pY = (cos((2*PI/wavelength)*x)*amplitude);
 
 		// rotation matrix
 		pX = (_pX*cos(theta)) - (_pY*sin(theta)) - 0.5*distanceToScreen
@@ -141,7 +146,7 @@ function drawSineWaves() {
 	theta = atan((mY+0.5*(distanceBetweenSlits + slitWidth)) / distanceToScreen)
 	for (let x = 0; x < pathLength; x += dx) {
 		_pX = x;
-		_pY = (sin((2*PI/wavelength)*x)*amplitude);
+		_pY = (cos((2*PI/wavelength)*x)*amplitude);
 
 		// rotation matrix
 		pX = (_pX*cos(theta)) - (_pY*sin(theta)) - 0.5*distanceToScreen
