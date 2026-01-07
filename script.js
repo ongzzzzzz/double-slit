@@ -11,7 +11,7 @@ let slitWidth = 10;
 
 let dSlider; // slit separation
 let lSlider; // dist to screen
-let wSlider; // wavelength 
+let wSlider; // wavelength
 
 // drawScreen
 let n;
@@ -26,7 +26,7 @@ let inputRadius = 20;
 
 // drawSineWaves
 let pathLength;
-let resolution = 500;
+let resolution = 1000;
 let amplitude = 10;
 let dx;
 let pX, pY, _pX, _pY = [0, 0, 0, 0];
@@ -59,7 +59,7 @@ function draw() {
 	drawScreen(0.5 * distanceToScreen)
 
 	stroke(255)
-	drawWaves(-0.5 * distanceToScreen)
+	// drawWaves(-0.5 * distanceToScreen)
 	drawLines(-0.5 * distanceToScreen)
 
 	drawSineWaves();
@@ -73,20 +73,40 @@ function drawSlits(x) {
 }
 
 function drawScreen(x) {
+	// for (let y = bottomMost; y < topMost; y++) {
+	// 	n = ((distanceBetweenSlits * y) / (distanceToScreen * wavelength));
+
+	// 	// to make sure the modulo is positive
+	// 	modulo = (n % k > 0) ? (n % k) : ((n % k) + k)
+
+	// 	// check .draw for details
+	// 	if (Math.ceil(n / k) % 2 == 0) {
+	// 		pointColor = map(modulo, 0, k, 0, 255)
+	// 	} else {
+	// 		pointColor = map(modulo, 0, k, 255, 0)
+	// 	}
+	// 	stroke(pointColor)
+	// 	point(x, y)
+	// }
+
 	for (let y = bottomMost; y < topMost; y++) {
-		n = ((distanceBetweenSlits * y) / (distanceToScreen * wavelength));
+		// Calculate the path difference
+		let pathDiff = abs(
+			sqrt(pow(distanceToScreen, 2) + pow(y - 0.5 * distanceBetweenSlits, 2)) -
+			sqrt(pow(distanceToScreen, 2) + pow(y + 0.5 * distanceBetweenSlits, 2))
+		);
 
-		// to make sure the modulo is positive
-		modulo = (n % k > 0) ? (n % k) : ((n % k) + k)
+		// Calculate the amplitude of the resulting wave
+		let wave1 = cos((2 * PI / wavelength) * pathDiff);
+		let wave2 = cos((2 * PI / wavelength) * pathDiff);
+		let resultantAmplitude = abs(wave1 + wave2);
 
-		// check .draw for details
-		if (Math.ceil(n / k) % 2 == 0) {
-			pointColor = map(modulo, 0, k, 0, 255)
-		} else {
-			pointColor = map(modulo, 0, k, 255, 0)
-		}
-		stroke(pointColor)
-		point(x, y)
+		// Map the amplitude to a color intensity
+		pointColor = map(resultantAmplitude, 0, 2, 0, 255);
+
+		// Draw the point on the screen
+		stroke(pointColor);
+		point(x, y);
 	}
 }
 
@@ -128,7 +148,7 @@ function drawSineWaves() {
 	theta = atan((mY-0.5*(distanceBetweenSlits + slitWidth)) / distanceToScreen)
 	for (let x = 0; x < pathLength; x += dx) {
 		_pX = x;
-		_pY = (cos((2*PI/wavelength)*x)*amplitude);
+		_pY = (sin((2*PI/wavelength)*x)*amplitude);
 
 		// rotation matrix
 		pX = (_pX*cos(theta)) - (_pY*sin(theta)) - 0.5*distanceToScreen
